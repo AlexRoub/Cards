@@ -1,0 +1,17 @@
+CREATE TABLE USERS (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('MEMBER', 'ADMIN') NOT NULL
+);
+
+CREATE TABLE CARDS (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    color VARCHAR(7),
+    status ENUM('To Do', 'In Progress', 'Done') NOT NULL DEFAULT 'To Do',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
