@@ -2,7 +2,7 @@ package com.aroubeidis.cards.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.aroubeidis.cards.model.Status;
 
@@ -49,7 +49,7 @@ public class CardDto implements Serializable {
 	private Status status = Status.TO_DO;
 
 	@Column(nullable = false)
-	private LocalDateTime creationDate = LocalDateTime.now();
+	private LocalDate creationDate = LocalDate.now();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)

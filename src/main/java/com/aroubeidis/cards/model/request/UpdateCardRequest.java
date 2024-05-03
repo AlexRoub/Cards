@@ -1,9 +1,8 @@
 package com.aroubeidis.cards.model.request;
 
-import org.springframework.lang.Nullable;
-
 import com.aroubeidis.cards.model.Status;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,10 +17,8 @@ import lombok.ToString;
 public class UpdateCardRequest {
 
 	private String name;
-	@Nullable
 	private String description;
-	@Nullable
+	@Pattern(regexp = "^#[a-zA-Z0-9]{6}$")
 	private String color;
-	@Nullable
 	private Status status;
 }

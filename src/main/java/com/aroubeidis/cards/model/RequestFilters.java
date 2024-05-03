@@ -1,6 +1,6 @@
 package com.aroubeidis.cards.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +16,5 @@ public class RequestFilters {
 	private String name;
 	private String color;
 	private String status;
-	private LocalDateTime creationDate;
+	private LocalDate creationDate;
 }

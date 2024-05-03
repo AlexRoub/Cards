@@ -1,8 +1,7 @@
 package com.aroubeidis.cards.model.response;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-import com.aroubeidis.cards.model.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +17,8 @@ import lombok.ToString;
 @Builder
 public class CardResponse {
 
+	@JsonProperty("id")
+	private Long id;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("description")
@@ -25,7 +26,7 @@ public class CardResponse {
 	@JsonProperty("color")
 	private String color;
 	@JsonProperty("status")
-	private Status status;
+	private String status;
 	@JsonProperty("creationDate")
-	private LocalDateTime creationDate;
+	private LocalDate creationDate;
 }

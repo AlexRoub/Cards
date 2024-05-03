@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.aroubeidis.cards.configuration.JwtService;
 import com.aroubeidis.cards.dto.TokenDto;
 import com.aroubeidis.cards.dto.UserDto;
+import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.TokenType;
 import com.aroubeidis.cards.model.request.AuthenticationRequest;
 import com.aroubeidis.cards.model.request.RegisterRequest;
@@ -59,7 +60,9 @@ public class AuthenticationService {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
 		final var user = userRepository.findByEmail(request.getEmail())
-			.orElseThrow();
+			.orElseThrow(() -> ForbiddenException.builder()
+				.message("User doesn't exist.")
+				.build());
 
 		final var jwtToken = jwtService.generateToken(user);
 		final var refreshToken = jwtService.generateRefreshToken(user);

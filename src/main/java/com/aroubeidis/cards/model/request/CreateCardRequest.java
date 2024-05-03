@@ -1,7 +1,7 @@
 package com.aroubeidis.cards.model.request;
 
-import org.springframework.lang.Nullable;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +15,9 @@ import lombok.ToString;
 @Builder
 public class CreateCardRequest {
 
+	@NotBlank
 	private String name;
-	@Nullable
 	private String description;
-	@Nullable
+	@Pattern(regexp = "^#[a-zA-Z0-9]{6}$")
 	private String color;
 }
