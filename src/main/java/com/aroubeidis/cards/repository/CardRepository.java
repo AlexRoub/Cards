@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import com.aroubeidis.cards.dto.CardDto;
+import com.aroubeidis.cards.entities.CardDto;
 
 @Repository
 public interface CardRepository extends JpaRepository<CardDto, Long>, JpaSpecificationExecutor<CardDto> {

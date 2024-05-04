@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aroubeidis.cards.configuration.JwtService;
-import com.aroubeidis.cards.dto.TokenDto;
-import com.aroubeidis.cards.dto.UserDto;
+import com.aroubeidis.cards.entities.TokenDto;
+import com.aroubeidis.cards.entities.UserDto;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.TokenType;
 import com.aroubeidis.cards.model.request.AuthenticationRequest;

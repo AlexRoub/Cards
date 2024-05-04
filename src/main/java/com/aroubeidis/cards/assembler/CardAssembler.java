@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import com.aroubeidis.cards.dto.CardDto;
+import com.aroubeidis.cards.entities.CardDto;
 import com.aroubeidis.cards.model.response.CardResponse;
 
 @Component

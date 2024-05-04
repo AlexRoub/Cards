@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.aroubeidis.cards.dto.TokenDto;
+import com.aroubeidis.cards.entities.TokenDto;
 
 public interface TokenRepository extends JpaRepository<TokenDto, Long> {
 

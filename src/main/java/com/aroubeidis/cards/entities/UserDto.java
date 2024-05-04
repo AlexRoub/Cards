@@ -1,4 +1,4 @@
-package com.aroubeidis.cards.dto;
+package com.aroubeidis.cards.entities;
 
 import java.io.Serial;
 import java.util.Collection;

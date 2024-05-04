@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aroubeidis.cards.assembler.CardAssembler;
-import com.aroubeidis.cards.dto.CardDto;
+import com.aroubeidis.cards.entities.CardDto;
 import com.aroubeidis.cards.exceptions.BadRequestException;
 import com.aroubeidis.cards.model.GetCardsVO;
 import com.aroubeidis.cards.model.Role;

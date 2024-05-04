@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.aroubeidis.cards.dto.CardDto;
+import com.aroubeidis.cards.entities.CardDto;
 import com.aroubeidis.cards.model.Status;
 
 import io.micrometer.common.util.StringUtils;

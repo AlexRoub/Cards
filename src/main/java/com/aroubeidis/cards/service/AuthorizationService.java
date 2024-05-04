@@ -6,8 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.aroubeidis.cards.configuration.JwtService;
-import com.aroubeidis.cards.dto.CardDto;
-import com.aroubeidis.cards.dto.UserDto;
+import com.aroubeidis.cards.entities.CardDto;
+import com.aroubeidis.cards.entities.UserDto;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.repository.CardRepository;

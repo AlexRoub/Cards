@@ -1,4 +1,4 @@
-package com.aroubeidis.cards.dto;
+package com.aroubeidis.cards.entities;
 
 import com.aroubeidis.cards.model.TokenType;
 
@@ -11,16 +11,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "TOKEN")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class TokenDto {
 
 	@Id
