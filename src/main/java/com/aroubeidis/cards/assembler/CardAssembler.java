@@ -6,9 +6,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.aroubeidis.cards.entities.CardDto;
+import com.aroubeidis.cards.model.Status;
 import com.aroubeidis.cards.model.response.CardResponse;
 
 @Component
@@ -21,7 +23,7 @@ public class CardAssembler {
 			.orElse(null);
 	}
 
-	public Page<CardResponse> toModel(final Page<CardDto> cardPage) {
+	public Page<CardResponse> toModelPage(final Page<CardDto> cardPage) {
 
 		final var cards = cardPage.getContent()
 			.stream()
@@ -34,15 +36,18 @@ public class CardAssembler {
 			cardPage.getTotalElements());
 	}
 
-	private CardResponse buildCardResponse(final CardDto dto) {
+	private CardResponse buildCardResponse(@NonNull final CardDto dto) {
+
+		final var status = Optional.ofNullable(dto.getStatus())
+			.map(Status::getValue)
+			.orElse(null);
 
 		return CardResponse.builder()
 			.id(dto.getId())
 			.name(dto.getName())
 			.description(dto.getDescription())
 			.color(dto.getColor())
-			.status(dto.getStatus()
-				.getValue())
+			.status(status)
 			.creationDate(dto.getCreationDate())
 			.build();
 	}

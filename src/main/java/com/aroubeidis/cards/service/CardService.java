@@ -55,7 +55,7 @@ public class CardService {
 			userId);
 		final var cardPage = cardRepository.findAll(spec, page);
 
-		return cardAssembler.toModel(cardPage);
+		return cardAssembler.toModelPage(cardPage);
 	}
 
 	public CardResponse getCardById(final HttpHeaders headers, final Long cardId) {
