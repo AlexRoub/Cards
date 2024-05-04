@@ -34,10 +34,10 @@ public class CardController {
 
 	private final CardService cardService;
 
-	@PostMapping("/all")
+	@PostMapping
 	public Page<CardResponse> getCards(@RequestHeader final HttpHeaders headers,
-		@RequestParam(defaultValue = "${constants.defaultPage}") final int page,
-		@RequestParam(defaultValue = "${constants.defaultSize}") final int size,
+		@RequestParam(defaultValue = "${constants.defaultPage:0}") final int page,
+		@RequestParam(defaultValue = "${constants.defaultSize:10}") final int size,
 		@RequestParam(required = false, defaultValue = "creationDate, desc") final String[] sort,
 		@RequestBody final RequestFilters filters) {
 
@@ -63,7 +63,7 @@ public class CardController {
 				.build());
 	}
 
-	@PostMapping
+	@PostMapping("/create")
 	public ResponseEntity<CardResponse> createCard(@RequestHeader final HttpHeaders headers,
 		@RequestBody @Valid final CreateCardRequest createCardRequest) {
 

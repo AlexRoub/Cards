@@ -13,5 +13,5 @@ import com.aroubeidis.cards.dto.CardDto;
 @Repository
 public interface CardRepository extends JpaRepository<CardDto, Long>, JpaSpecificationExecutor<CardDto> {
 
-	Page<CardDto> findAll(Specification<CardDto> spec, @NonNull final Pageable pageable);
+	Page<CardDto> findAll(@NonNull Specification<CardDto> spec, @NonNull final Pageable pageable);
 }

@@ -114,22 +114,31 @@
       "response": []
     },
     {
-      "name": "GetCards",
+      "name": "FetchCards",
       "request": {
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyb3ViQGdtYWlsLmNvbSIsImlhdCI6MTcxNDc0MDU5NiwiZXhwIjoxNzE0ODI2OTk2fQ.5zs5FXKlVDq_zG8wSop6bip_XFpooOm45blBXzXOR-A",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsImlhdCI6MTcxNDgxMjU3MywiZXhwIjoxNzE0ODk4OTczfQ.w2jUv8eVPUoj14e2n1bJdSqV62oWwh1auFqA5M0xgbg",
               "type": "string"
             }
           ]
         },
-        "method": "GET",
+        "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"test user 1\",\r\n    \"color\": \"#ff0000\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": "http://localhost:8080/api/v1/cards",
+          "raw": "http://localhost:8080/api/v1/cards?page=0&size=10",
           "protocol": "http",
           "host": [
             "localhost"
@@ -139,6 +148,16 @@
             "api",
             "v1",
             "cards"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "10"
+            }
           ]
         }
       },
@@ -152,7 +171,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyb3ViQGdtYWlsLmNvbSIsImlhdCI6MTcxNDc0MDU5NiwiZXhwIjoxNzE0ODI2OTk2fQ.5zs5FXKlVDq_zG8wSop6bip_XFpooOm45blBXzXOR-A",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsImlhdCI6MTcxNDgxMjU3MywiZXhwIjoxNzE0ODk4OTczfQ.w2jUv8eVPUoj14e2n1bJdSqV62oWwh1auFqA5M0xgbg",
               "type": "string"
             }
           ]
@@ -169,7 +188,7 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/api/v1/cards",
+          "raw": "http://localhost:8080/api/v1/cards/create",
           "protocol": "http",
           "host": [
             "localhost"
@@ -178,7 +197,8 @@
           "path": [
             "api",
             "v1",
-            "cards"
+            "cards",
+            "create"
           ]
         }
       },

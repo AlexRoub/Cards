@@ -18,8 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
 	private final AuthenticationService authenticationService;
