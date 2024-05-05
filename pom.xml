@@ -177,6 +177,7 @@
 							<param>${project.groupId}.*.entities.*</param>
 							<param>${project.groupId}.*.model.*</param>
 							<param>${project.groupId}.*.configuration.*</param>
+							<param>${project.groupId}.*.specifications.*</param>
 						</excludedClasses>
 					</configuration>
 				</plugin>

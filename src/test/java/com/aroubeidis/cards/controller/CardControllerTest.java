@@ -39,7 +39,7 @@ class CardControllerTest {
 		final var headers = new HttpHeaders();
 		final var filters = RequestFilters.builder()
 			.build();
-		final var sort = new String[] { "creationDate, desc" };
+		final var sort = new String[] { "creationDate", "desc" };
 
 		final var getCardsVO = GetCardsVO.builder()
 			.headers(headers)

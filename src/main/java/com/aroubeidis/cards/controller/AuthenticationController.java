@@ -15,6 +15,7 @@ import com.aroubeidis.cards.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,13 +26,13 @@ public class AuthenticationController {
 	private final AuthenticationService authenticationService;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> register(@RequestBody final RegisterRequest request) {
+	public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid final RegisterRequest request) {
 
 		return ResponseEntity.ok(authenticationService.register(request));
 	}
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody final AuthenticationRequest request) {
+	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @Valid final AuthenticationRequest request) {
 
 		return ResponseEntity.ok(authenticationService.authenticate(request));
 	}

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aroubeidis.cards.assembler.CardAssembler;
 import com.aroubeidis.cards.entities.CardDto;
-import com.aroubeidis.cards.exceptions.BadRequestException;
 import com.aroubeidis.cards.model.GetCardsVO;
 import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.model.Status;
@@ -64,8 +63,7 @@ public class CardService {
 		return cardAssembler.toModel(cardDto);
 	}
 
-	public CardResponse createCard(final HttpHeaders headers, final CreateCardRequest createCardRequest)
-		throws BadRequestException {
+	public CardResponse createCard(final HttpHeaders headers, final CreateCardRequest createCardRequest) {
 
 		final var user = authorizationService.getUser(headers);
 
