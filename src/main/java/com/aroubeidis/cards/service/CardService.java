@@ -55,7 +55,7 @@ public class CardService {
 
 	public CardResponse getCardById(final HttpHeaders headers, final Long cardId) {
 
-		authorizationService.checkAuthorization(headers, cardId);
+		authorizationService.checkAuthorizationOfAction(headers, cardId);
 
 		final var cardDto = cardRepository.findById(cardId)
 			.orElse(null);
@@ -83,7 +83,7 @@ public class CardService {
 
 	public CardResponse updateCard(final HttpHeaders headers, final Long cardId, @NonNull final UpdateCardRequest request) {
 
-		authorizationService.checkAuthorization(headers, cardId);
+		authorizationService.checkAuthorizationOfAction(headers, cardId);
 
 		final var cardDto = cardRepository.findById(cardId)
 			.orElse(null);
@@ -112,7 +112,7 @@ public class CardService {
 
 	public boolean deleteCard(final HttpHeaders headers, final Long cardId) {
 
-		authorizationService.checkAuthorization(headers, cardId);
+		authorizationService.checkAuthorizationOfAction(headers, cardId);
 
 		if (cardRepository.existsById(cardId)) {
 			cardRepository.deleteById(cardId);

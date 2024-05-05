@@ -18,8 +18,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -345,7 +343,7 @@ class CardServiceTest {
 		final var response = cardService.getCardById(headers, cardId);
 		assertEquals(cardResponse, response);
 
-		verify(authorizationService).checkAuthorization(headers, cardId);
+		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 	}
 
 	@Test
@@ -357,7 +355,7 @@ class CardServiceTest {
 		when(cardRepository.findById(cardId)).thenReturn(Optional.empty());
 
 		assertNull(cardService.getCardById(headers, cardId));
-		verify(authorizationService).checkAuthorization(headers, cardId);
+		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 	}
 
 	@Test
@@ -442,7 +440,7 @@ class CardServiceTest {
 		final var response = cardService.updateCard(headers, cardId, request);
 		assertEquals(cardResponse, response);
 
-		verify(authorizationService).checkAuthorization(headers, cardId);
+		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 	}
 
 	@Test
@@ -457,7 +455,7 @@ class CardServiceTest {
 		when(cardRepository.findById(cardId)).thenReturn(Optional.empty());
 
 		assertNull(cardService.updateCard(headers, cardId, request));
-		verify(authorizationService).checkAuthorization(headers, cardId);
+		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 		verify(cardRepository, times(0)).save(any());
 	}
 
@@ -471,7 +469,7 @@ class CardServiceTest {
 
 		assertTrue(cardService.deleteCard(headers, cardId));
 
-		verify(authorizationService).checkAuthorization(headers, cardId);
+		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 		verify(cardRepository, times(1)).deleteById(cardId);
 	}
 
@@ -485,7 +483,7 @@ class CardServiceTest {
 
 		assertFalse(cardService.deleteCard(headers, cardId));
 
-		verify(authorizationService).checkAuthorization(headers, cardId);
+		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 		verify(cardRepository, times(0)).deleteById(cardId);
 	}
 }

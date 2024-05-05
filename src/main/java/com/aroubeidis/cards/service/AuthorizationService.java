@@ -22,7 +22,7 @@ public class AuthorizationService {
 	private final CardRepository cardRepository;
 	private final JwtService jwtService;
 
-	public void checkAuthorization(final HttpHeaders headers, final Long cardId) {
+	public void checkAuthorizationOfAction(final HttpHeaders headers, final Long cardId) {
 
 		final var user = getUser(headers);
 		final var userId = user.getId();
