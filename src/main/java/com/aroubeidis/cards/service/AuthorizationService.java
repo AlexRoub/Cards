@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-import com.aroubeidis.cards.configuration.JwtService;
 import com.aroubeidis.cards.entities.CardDto;
 import com.aroubeidis.cards.entities.UserDto;
 import com.aroubeidis.cards.exceptions.ForbiddenException;

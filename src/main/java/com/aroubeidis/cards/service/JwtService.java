@@ -1,4 +1,4 @@
-package com.aroubeidis.cards.configuration;
+package com.aroubeidis.cards.service;
 
 import java.security.Key;
 import java.util.Date;
@@ -15,6 +15,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Service
 public class JwtService {
@@ -52,21 +53,21 @@ public class JwtService {
 		return buildToken(new HashMap<>(), userDetails, refreshExpiration);
 	}
 
-	private String buildToken(final Map<String, Object> extraClaims, final UserDetails userDetails, final long expiration) {
-
-		return Jwts.builder()
-			.setClaims(extraClaims)
-			.setSubject(userDetails.getUsername())
-			.setIssuedAt(new Date(System.currentTimeMillis()))
-			.setExpiration(new Date(System.currentTimeMillis() + expiration))
-			.signWith(getSignInKey(), SignatureAlgorithm.HS256)
-			.compact();
-	}
-
 	public boolean isTokenValid(final String token, final UserDetails userDetails) {
 
 		final var username = extractUsername(token);
 		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+	}
+
+	private String buildToken(final Map<String, Object> extraClaims, final UserDetails userDetails, final long expiration) {
+
+		return Jwts.builder()
+				.setClaims(extraClaims)
+				.setSubject(userDetails.getUsername())
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + expiration))
+				.signWith(getSignInKey(), SignatureAlgorithm.HS256)
+				.compact();
 	}
 
 	private boolean isTokenExpired(final String token) {
@@ -82,10 +83,10 @@ public class JwtService {
 	private Claims extractAllClaims(final String token) {
 
 		return Jwts.parserBuilder()
-			.setSigningKey(getSignInKey())
-			.build()
-			.parseClaimsJws(token)
-			.getBody();
+				.setSigningKey(getSignInKey())
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
 	}
 
 	private Key getSignInKey() {

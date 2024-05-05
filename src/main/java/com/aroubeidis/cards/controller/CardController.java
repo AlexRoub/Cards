@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aroubeidis.cards.exceptions.BadRequestException;
 import com.aroubeidis.cards.model.GetCardsVO;
 import com.aroubeidis.cards.model.RequestFilters;
 import com.aroubeidis.cards.model.request.CreateCardRequest;

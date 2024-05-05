@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GeneralUtils {
 
-	public static Sort getSort(final String sort, final String direction)
-		throws BadRequestException {
+	public static Sort getSort(final String sort, final String direction) {
 
 		Stream.of(SortEnum.values())
 			.map(SortEnum::getValue)

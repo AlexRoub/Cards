@@ -35,8 +35,7 @@ public class CardService {
 	private final CardAssembler cardAssembler;
 	private final AuthorizationService authorizationService;
 
-	public Page<CardResponse> getAllCards(@NonNull final GetCardsVO cardsVO)
-		throws BadRequestException {
+	public Page<CardResponse> getAllCards(@NonNull final GetCardsVO cardsVO) {
 
 		final var user = authorizationService.getUser(cardsVO.getHeaders());
 
@@ -48,10 +47,7 @@ public class CardService {
 			? null
 			: user.getId();
 
-		final var spec = CardSpecifications.createSpecification(filters.getName(),
-			filters.getColor(),
-			filters.getStatus(),
-			filters.getCreationDate(),
+		final var spec = CardSpecifications.createSpecification(filters,
 			userId);
 		final var cardPage = cardRepository.findAll(spec, page);
 

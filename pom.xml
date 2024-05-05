@@ -130,9 +130,58 @@
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Google -->
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>1.14.2</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.pitest</groupId>
+							<artifactId>pitest-junit5-plugin</artifactId>
+							<version>1.0.0</version>
+						</dependency>
+					</dependencies>
+					<executions>
+						<execution>
+							<goals>
+								<goal>mutationCoverage</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<mutationThreshold>100</mutationThreshold>
+						<timeoutConstant>100000</timeoutConstant>
+						<threads>2</threads>
+						<skip>false</skip>
+						<outputFormats>
+							<outputFormat>HTML</outputFormat>
+							<outputFormat>XML</outputFormat>
+						</outputFormats>
+						<excludedClasses>
+							<param>${project.groupId}.*.Application</param>
+							<param>${project.groupId}.*.repository.*</param>
+							<param>${project.groupId}.*.exceptions.*</param>
+							<param>${project.groupId}.*.model.*</param>
+							<param>${project.groupId}.*.entities.*</param>
+							<param>${project.groupId}.*.model.*</param>
+							<param>${project.groupId}.*.configuration.*</param>
+						</excludedClasses>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
