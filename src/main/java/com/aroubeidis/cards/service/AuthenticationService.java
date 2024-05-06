@@ -32,14 +32,15 @@ public class AuthenticationService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
+	private final ObjectMapper objectMapper;
 
 	public AuthenticationResponse register(final RegisterRequest request) {
 
 		final var user = UserDto.builder()
-			.email(request.getEmail())
-			.password(passwordEncoder.encode(request.getPassword()))
-			.role(request.getRole())
-			.build();
+				.email(request.getEmail())
+				.password(passwordEncoder.encode(request.getPassword()))
+				.role(request.getRole())
+				.build();
 
 		final var savedUser = userRepository.save(user);
 
@@ -49,9 +50,9 @@ public class AuthenticationService {
 		saveUserToken(savedUser, jwtToken);
 
 		return AuthenticationResponse.builder()
-			.accessToken(jwtToken)
-			.refreshToken(refreshToken)
-			.build();
+				.accessToken(jwtToken)
+				.refreshToken(refreshToken)
+				.build();
 	}
 
 	public AuthenticationResponse authenticate(final AuthenticationRequest request) {
@@ -59,9 +60,9 @@ public class AuthenticationService {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
 		final var user = userRepository.findByEmail(request.getEmail())
-			.orElseThrow(() -> ForbiddenException.builder()
-				.message("User doesn't exist.")
-				.build());
+				.orElseThrow(() -> ForbiddenException.builder()
+						.message("User doesn't exist.")
+						.build());
 
 		final var jwtToken = jwtService.generateToken(user);
 		final var refreshToken = jwtService.generateRefreshToken(user);
@@ -70,20 +71,47 @@ public class AuthenticationService {
 		saveUserToken(user, jwtToken);
 
 		return AuthenticationResponse.builder()
-			.accessToken(jwtToken)
-			.refreshToken(refreshToken)
-			.build();
+				.accessToken(jwtToken)
+				.refreshToken(refreshToken)
+				.build();
+	}
+
+	public void refreshToken(final HttpServletRequest request, final HttpServletResponse response)
+			throws IOException {
+
+		final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			return;
+		}
+
+		final var refreshToken = authHeader.substring(7);
+		final var userEmail = jwtService.extractUsername(refreshToken);
+
+		if (userEmail != null) {
+			final var user = userRepository.findByEmail(userEmail)
+					.orElseThrow();
+			if (jwtService.isTokenValid(refreshToken, user)) {
+				final var accessToken = jwtService.generateToken(user);
+				revokeAllUserTokens(user);
+				saveUserToken(user, accessToken);
+				final var authResponse = AuthenticationResponse.builder()
+						.accessToken(accessToken)
+						.refreshToken(refreshToken)
+						.build();
+				objectMapper.writeValue(response.getOutputStream(), authResponse);
+			}
+		}
 	}
 
 	private void saveUserToken(final UserDto user, final String jwtToken) {
 
 		final var token = TokenDto.builder()
-			.user(user)
-			.token(jwtToken)
-			.tokenType(TokenType.BEARER)
-			.expired(false)
-			.revoked(false)
-			.build();
+				.user(user)
+				.token(jwtToken)
+				.tokenType(TokenType.BEARER)
+				.expired(false)
+				.revoked(false)
+				.build();
 
 		tokenRepository.save(token);
 	}
@@ -102,33 +130,5 @@ public class AuthenticationService {
 		});
 
 		tokenRepository.saveAll(validUserTokens);
-	}
-
-	public void refreshToken(final HttpServletRequest request, final HttpServletResponse response)
-		throws IOException {
-
-		final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			return;
-		}
-
-		final var refreshToken = authHeader.substring(7);
-		final var userEmail = jwtService.extractUsername(refreshToken);
-
-		if (userEmail != null) {
-			final var user = userRepository.findByEmail(userEmail)
-				.orElseThrow();
-			if (jwtService.isTokenValid(refreshToken, user)) {
-				final var accessToken = jwtService.generateToken(user);
-				revokeAllUserTokens(user);
-				saveUserToken(user, accessToken);
-				final var authResponse = AuthenticationResponse.builder()
-					.accessToken(accessToken)
-					.refreshToken(refreshToken)
-					.build();
-				new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-			}
-		}
 	}
 }

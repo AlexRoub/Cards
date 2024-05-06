@@ -1,5 +1,6 @@
 package com.aroubeidis.cards.service;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -20,7 +21,7 @@ public class LogoutService implements LogoutHandler {
 	@Override
 	public void logout(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) {
 
-		final var authHeader = request.getHeader("Authorization");
+		final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			return;
 		}

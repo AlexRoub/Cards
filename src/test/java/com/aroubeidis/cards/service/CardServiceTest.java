@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -38,6 +39,7 @@ import com.aroubeidis.cards.model.request.CreateCardRequest;
 import com.aroubeidis.cards.model.request.UpdateCardRequest;
 import com.aroubeidis.cards.model.response.CardResponse;
 import com.aroubeidis.cards.repository.CardRepository;
+import com.aroubeidis.cards.specifications.CardSpecifications;
 import com.aroubeidis.cards.utils.GeneralUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,237 +58,257 @@ class CardServiceTest {
 	@Test
 	void getAllCards_noFilters_userADMIN_returnPage() {
 
-		final var headers = new HttpHeaders();
-		final var filters = RequestFilters.builder()
-				.build();
+		try (final var mockedStatic = mockStatic(CardSpecifications.class)) {
+			final var headers = new HttpHeaders();
+			final var filters = RequestFilters.builder()
+					.build();
 
-		final var cardsVO = GetCardsVO.builder()
-				.headers(headers)
-				.page(0)
-				.size(10)
-				.sort(new String[] { "name", "asc" })
-				.filters(filters)
-				.build();
+			final var cardsVO = GetCardsVO.builder()
+					.headers(headers)
+					.page(0)
+					.size(10)
+					.sort(new String[] { "name", "asc" })
+					.filters(filters)
+					.build();
 
-		final var user = UserDto.builder()
-				.id(1L)
-				.email("a@b.com")
-				.role(Role.ADMIN)
-				.build();
-		when(authorizationService.getUser(headers)).thenReturn(user);
+			final var user = UserDto.builder()
+					.id(1L)
+					.email("a@b.com")
+					.role(Role.ADMIN)
+					.build();
+			when(authorizationService.getUser(headers)).thenReturn(user);
 
-		final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
-		final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
-		final var cardDto1 = CardDto.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO)
-				.build();
-		final var cardDto2 = CardDto.builder()
-				.name("name 1")
-				.description("description 1")
-				.color("#ff0011")
-				.creationDate(LocalDate.now())
-				.status(Status.IN_PROGRESS)
-				.build();
-		final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto2, cardDto1));
-		when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
-		final var cardResponse1 = CardResponse.builder()
-				.name("name 1")
-				.description("description 1")
-				.color("#ff0011")
-				.creationDate(LocalDate.now())
-				.status(Status.IN_PROGRESS.getValue())
-				.build();
-		final var cardResponse2 = CardResponse.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO.getValue())
-				.build();
-		final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
-		when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
+			final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
 
-		final var response = cardService.getAllCards(cardsVO);
-		assertEquals(cardResponsePage, response);
+			final var cardDto1 = CardDto.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO)
+					.build();
+			final var cardDto2 = CardDto.builder()
+					.name("name 1")
+					.description("description 1")
+					.color("#ff0011")
+					.creationDate(LocalDate.now())
+					.status(Status.IN_PROGRESS)
+					.build();
+			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto2, cardDto1));
+			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
+
+			final var cardResponse1 = CardResponse.builder()
+					.name("name 1")
+					.description("description 1")
+					.color("#ff0011")
+					.creationDate(LocalDate.now())
+					.status(Status.IN_PROGRESS.getValue())
+					.build();
+			final var cardResponse2 = CardResponse.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO.getValue())
+					.build();
+			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
+			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+
+			final var response = cardService.getAllCards(cardsVO);
+			assertEquals(cardResponsePage, response);
+
+			mockedStatic.verify(() -> CardSpecifications.createSpecification(filters, null), times(1));
+		}
 	}
 
 	@Test
 	void getAllCards_withNameFilters_userADMIN_returnPage() {
 
-		final var headers = new HttpHeaders();
-		final var filters = RequestFilters.builder()
-				.name("name 1")
-				.build();
+		try (final var mockedStatic = mockStatic(CardSpecifications.class)) {
+			final var headers = new HttpHeaders();
+			final var filters = RequestFilters.builder()
+					.name("name 1")
+					.build();
 
-		final var cardsVO = GetCardsVO.builder()
-				.headers(headers)
-				.page(0)
-				.size(Integer.MAX_VALUE)
-				.sort(new String[] { "creationDate", "asc" })
-				.filters(filters)
-				.build();
+			final var cardsVO = GetCardsVO.builder()
+					.headers(headers)
+					.page(0)
+					.size(Integer.MAX_VALUE)
+					.sort(new String[] { "creationDate", "asc" })
+					.filters(filters)
+					.build();
 
-		final var user = UserDto.builder()
-				.id(1L)
-				.email("a@b.com")
-				.role(Role.ADMIN)
-				.build();
-		when(authorizationService.getUser(headers)).thenReturn(user);
+			final var user = UserDto.builder()
+					.id(1L)
+					.email("a@b.com")
+					.role(Role.ADMIN)
+					.build();
+			when(authorizationService.getUser(headers)).thenReturn(user);
 
-		final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
-		final var pageable = PageRequest.of(cardsVO.getPage(), Integer.MAX_VALUE, sortBy);
-		final var cardDto = CardDto.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO)
-				.build();
-		final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto));
-		when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
-		final var cardResponse = CardResponse.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO.getValue())
-				.build();
-		final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse));
-		when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
+			final var pageable = PageRequest.of(cardsVO.getPage(), Integer.MAX_VALUE, sortBy);
+			final var cardDto = CardDto.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO)
+					.build();
+			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto));
+			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
 
-		final var response = cardService.getAllCards(cardsVO);
+			final var cardResponse = CardResponse.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO.getValue())
+					.build();
+			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse));
+			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
 
-		assertEquals(cardResponsePage, response);
+			final var response = cardService.getAllCards(cardsVO);
+			assertEquals(cardResponsePage, response);
+
+			mockedStatic.verify(() -> CardSpecifications.createSpecification(filters, null), times(1));
+		}
 	}
 
 	@Test
 	void getAllCards_withCreationDateAscSort_noFilters_userADMIN_returnPage() {
 
-		final var headers = new HttpHeaders();
-		final var filters = RequestFilters.builder()
-				.build();
+		try (final var mockedStatic = mockStatic(CardSpecifications.class)) {
 
-		final var cardsVO = GetCardsVO.builder()
-				.headers(headers)
-				.page(0)
-				.size(10)
-				.sort(new String[] { "creationDate", "asc" })
-				.filters(filters)
-				.build();
+			final var headers = new HttpHeaders();
+			final var filters = RequestFilters.builder()
+					.build();
 
-		final var user = UserDto.builder()
-				.id(1L)
-				.email("a@b.com")
-				.role(Role.ADMIN)
-				.build();
-		when(authorizationService.getUser(headers)).thenReturn(user);
+			final var cardsVO = GetCardsVO.builder()
+					.headers(headers)
+					.page(0)
+					.size(10)
+					.sort(new String[] { "creationDate", "asc" })
+					.filters(filters)
+					.build();
 
-		final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
-		final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
-		final var cardDto1 = CardDto.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO)
-				.build();
-		final var cardDto2 = CardDto.builder()
-				.name("name 1")
-				.description("description 1")
-				.color("#ff0011")
-				.creationDate(LocalDate.now()
-						.minusDays(1))
-				.status(Status.IN_PROGRESS)
-				.build();
-		final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto1, cardDto2));
-		when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
-		final var cardResponse1 = CardResponse.builder()
-				.name("name 1")
-				.description("description 1")
-				.color("#ff0011")
-				.creationDate(LocalDate.now())
-				.status(Status.IN_PROGRESS.getValue())
-				.build();
-		final var cardResponse2 = CardResponse.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO.getValue())
-				.build();
-		final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
-		when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			final var user = UserDto.builder()
+					.id(1L)
+					.email("a@b.com")
+					.role(Role.ADMIN)
+					.build();
+			when(authorizationService.getUser(headers)).thenReturn(user);
 
-		final var response = cardService.getAllCards(cardsVO);
+			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
+			final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
+			final var cardDto1 = CardDto.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO)
+					.build();
+			final var cardDto2 = CardDto.builder()
+					.name("name 1")
+					.description("description 1")
+					.color("#ff0011")
+					.creationDate(LocalDate.now()
+							.minusDays(1))
+					.status(Status.IN_PROGRESS)
+					.build();
+			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto1, cardDto2));
+			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
 
-		assertEquals(cardResponsePage, response);
+			final var cardResponse1 = CardResponse.builder()
+					.name("name 1")
+					.description("description 1")
+					.color("#ff0011")
+					.creationDate(LocalDate.now())
+					.status(Status.IN_PROGRESS.getValue())
+					.build();
+			final var cardResponse2 = CardResponse.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO.getValue())
+					.build();
+			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
+			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+
+			final var response = cardService.getAllCards(cardsVO);
+			assertEquals(cardResponsePage, response);
+
+			mockedStatic.verify(() -> CardSpecifications.createSpecification(filters, null), times(1));
+		}
 	}
 
 	@Test
 	void getAllCards_withCreationDateAscSort_noFilters_userMEMBER_returnPage() {
 
-		final var headers = new HttpHeaders();
-		final var filters = RequestFilters.builder()
-				.build();
+		try (final var mockedStatic = mockStatic(CardSpecifications.class)) {
 
-		final var cardsVO = GetCardsVO.builder()
-				.headers(headers)
-				.page(0)
-				.size(10)
-				.sort(new String[] { "creationDate", "asc" })
-				.filters(filters)
-				.build();
+			final var headers = new HttpHeaders();
+			final var filters = RequestFilters.builder()
+					.build();
 
-		final var user = UserDto.builder()
-				.id(1L)
-				.email("a@b.com")
-				.role(Role.MEMBER)
-				.build();
-		when(authorizationService.getUser(headers)).thenReturn(user);
+			final var cardsVO = GetCardsVO.builder()
+					.headers(headers)
+					.page(0)
+					.size(10)
+					.sort(new String[] { "creationDate", "asc" })
+					.filters(filters)
+					.build();
 
-		final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
-		final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
-		final var cardDto1 = CardDto.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO)
-				.build();
-		final var cardDto2 = CardDto.builder()
-				.name("name 1")
-				.description("description 1")
-				.color("#ff0011")
-				.creationDate(LocalDate.now()
-						.minusDays(1))
-				.status(Status.IN_PROGRESS)
-				.build();
-		final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto1, cardDto2));
-		when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
-		final var cardResponse1 = CardResponse.builder()
-				.name("name 1")
-				.description("description 1")
-				.color("#ff0011")
-				.creationDate(LocalDate.now())
-				.status(Status.IN_PROGRESS.getValue())
-				.build();
-		final var cardResponse2 = CardResponse.builder()
-				.name("name 2")
-				.description("description 2")
-				.color("#ff0000")
-				.creationDate(LocalDate.now())
-				.status(Status.TO_DO.getValue())
-				.build();
-		final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
-		when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			final var user = UserDto.builder()
+					.id(1L)
+					.email("a@b.com")
+					.role(Role.MEMBER)
+					.build();
+			when(authorizationService.getUser(headers)).thenReturn(user);
 
-		final var response = cardService.getAllCards(cardsVO);
+			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
+			final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
+			final var cardDto1 = CardDto.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO)
+					.build();
+			final var cardDto2 = CardDto.builder()
+					.name("name 1")
+					.description("description 1")
+					.color("#ff0011")
+					.creationDate(LocalDate.now()
+							.minusDays(1))
+					.status(Status.IN_PROGRESS)
+					.build();
+			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto1, cardDto2));
+			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
 
-		assertEquals(cardResponsePage, response);
+			final var cardResponse1 = CardResponse.builder()
+					.name("name 1")
+					.description("description 1")
+					.color("#ff0011")
+					.creationDate(LocalDate.now())
+					.status(Status.IN_PROGRESS.getValue())
+					.build();
+			final var cardResponse2 = CardResponse.builder()
+					.name("name 2")
+					.description("description 2")
+					.color("#ff0000")
+					.creationDate(LocalDate.now())
+					.status(Status.TO_DO.getValue())
+					.build();
+			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
+			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+
+			final var response = cardService.getAllCards(cardsVO);
+			assertEquals(cardResponsePage, response);
+
+			mockedStatic.verify(() -> CardSpecifications.createSpecification(filters, user.getId()), times(1));
+		}
 	}
 
 	@Test
@@ -331,6 +353,7 @@ class CardServiceTest {
 				.status(Status.TO_DO)
 				.build();
 		when(cardRepository.findById(cardId)).thenReturn(Optional.of(cardDto));
+
 		final var cardResponse = CardResponse.builder()
 				.name("name 1")
 				.description("description 1")

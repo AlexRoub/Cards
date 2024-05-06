@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
+import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.model.request.AuthenticationRequest;
 import com.aroubeidis.cards.model.request.RegisterRequest;
 import com.aroubeidis.cards.model.response.AuthenticationResponse;
@@ -36,6 +37,9 @@ class AuthenticationControllerTest {
 	void register() {
 
 		final var request = RegisterRequest.builder()
+				.email("a@b.comm")
+				.password("1234")
+				.role(Role.ADMIN)
 				.build();
 
 		final var expectedResponse = AuthenticationResponse.builder()
