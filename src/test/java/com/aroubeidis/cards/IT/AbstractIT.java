@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 @SpringBootTest
 @AutoConfigureMockMvc
 @SqlGroup(@Sql(scripts = { "/__files/db/schema.sql", "/__files/db/data.sql" }))
-public class AbstractIT {
+public abstract class AbstractIT {
 
 	private static final int WIREMOCK_PORT = 8081;
 	private WireMockServer wireMockServer;
