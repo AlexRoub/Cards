@@ -16,12 +16,12 @@ public final class GeneralUtils {
 	public static Sort getSort(final String sort, final String direction) {
 
 		Stream.of(SortEnum.values())
-			.map(SortEnum::getValue)
-			.filter(sort::contains)
-			.findAny()
-			.orElseThrow(() -> BadRequestException.builder()
-				.message("Sort value provided is not valid")
-				.build());
+				.map(SortEnum::getValue)
+				.filter(sort::contains)
+				.findAny()
+				.orElseThrow(() -> BadRequestException.builder()
+						.message("Sort value provided is not valid")
+						.build());
 
 		return Sort.by(getSortDirection(direction), sort);
 	}
@@ -29,7 +29,7 @@ public final class GeneralUtils {
 	private static Sort.Direction getSortDirection(final String direction) {
 
 		return direction.contains("desc")
-			? Sort.Direction.DESC
-			: Sort.Direction.ASC;
+				? Sort.Direction.DESC
+				: Sort.Direction.ASC;
 	}
 }

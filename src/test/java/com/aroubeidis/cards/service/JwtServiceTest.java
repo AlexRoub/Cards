@@ -2,9 +2,12 @@ package com.aroubeidis.cards.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Date;
+
+import javax.crypto.SecretKey;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +18,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.aroubeidis.cards.entities.UserDto;
 import com.aroubeidis.cards.model.Role;
+import com.google.common.collect.Maps;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
@@ -28,7 +36,7 @@ class JwtServiceTest {
 	public void setUp() {
 
 		ReflectionTestUtils.setField(jwtService, "secretKey", "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970");
-		ReflectionTestUtils.setField(jwtService, "jwtExpiration", 604800000);
+		ReflectionTestUtils.setField(jwtService, "jwtExpiration", 86400000);
 		ReflectionTestUtils.setField(jwtService, "refreshExpiration", 604800000);
 	}
 
@@ -50,9 +58,16 @@ class JwtServiceTest {
 				.role(Role.MEMBER)
 				.build();
 
+		final var expectedResponse = Jwts.builder()
+				.setClaims(Maps.newHashMap())
+				.setSubject(user.getEmail())
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + 86400000))
+				.signWith(getKey(), SignatureAlgorithm.HS256)
+				.compact();
+
 		final var response = jwtService.generateToken(user);
-		assertNotNull(response);
-		assertTrue(response.contains("eyJhbGciOiJIUzI1NiJ9"));
+		assertEquals(expectedResponse, response);
 	}
 
 	@Test
@@ -65,9 +80,16 @@ class JwtServiceTest {
 				.role(Role.MEMBER)
 				.build();
 
+		final var expectedResponse = Jwts.builder()
+				.setClaims(Maps.newHashMap())
+				.setSubject(user.getEmail())
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + 604800000))
+				.signWith(getKey(), SignatureAlgorithm.HS256)
+				.compact();
+
 		final var response = jwtService.generateRefreshToken(user);
-		assertNotNull(response);
-		assertTrue(response.contains("eyJhbGciOiJIUzI1NiJ9"));
+		assertEquals(expectedResponse, response);
 	}
 
 	@Test
@@ -110,5 +132,11 @@ class JwtServiceTest {
 				.build();
 
 		assertThrows(ExpiredJwtException.class, () -> jwtService.isTokenValid(token, user));
+	}
+
+	private SecretKey getKey() {
+
+		final var keyBytes = Decoders.BASE64.decode("404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970");
+		return Keys.hmacShaKeyFor(keyBytes);
 	}
 }
