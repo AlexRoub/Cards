@@ -14,6 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import com.aroubeidis.cards.configuration.jwt.JwtAuthenticationFilter;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration

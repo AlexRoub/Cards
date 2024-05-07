@@ -1,10 +1,9 @@
 package com.aroubeidis.cards.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -17,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 
+import com.aroubeidis.cards.configuration.jwt.JwtService;
 import com.aroubeidis.cards.entities.CardDto;
 import com.aroubeidis.cards.entities.UserDto;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
@@ -39,18 +39,18 @@ class AuthorizationServiceTest {
 	private AuthorizationService authorizationService;
 
 	@Test
-	void checkAuthorizationOfAction_noToken_throwsForbiddenException() {
+	void getCardAfterAuthorization_noToken_throwsForbiddenException() {
 
 		final var headers = new HttpHeaders();
 
 		when(jwtService.extractUsername(null)).thenReturn(null);
 		when(userRepository.findByEmail(null)).thenReturn(Optional.empty());
 
-		assertThrows(ForbiddenException.class, () -> authorizationService.checkAuthorizationOfAction(headers, 1L));
+		assertThrows(ForbiddenException.class, () -> authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 
 	@Test
-	void checkAuthorizationOfAction_ADMIN() {
+	void getCardAfterAuthorization_ADMIN() {
 
 		final var headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer 12345");
@@ -63,13 +63,13 @@ class AuthorizationServiceTest {
 				.role(Role.ADMIN)
 				.build();
 		when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
-		authorizationService.checkAuthorizationOfAction(headers, 1L);
-
-		verify(cardRepository, times(0)).findById(anyLong());
+		when(cardRepository.findById(1L)).thenReturn(Optional.of(CardDto.builder()
+				.build()));
+		assertNotNull(authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 
 	@Test
-	void checkAuthorizationOfAction_MEMBER_cardId_exists_and_user_matches_success() {
+	void getCardAfterAuthorization_MEMBER_cardId_exists_and_user_matches_success() {
 
 		final var headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer 12345");
@@ -93,11 +93,11 @@ class AuthorizationServiceTest {
 				.build();
 		when(cardRepository.findById(1L)).thenReturn(Optional.of(cardDto));
 
-		authorizationService.checkAuthorizationOfAction(headers, 1L);
+		assertNotNull(authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 
 	@Test
-	void checkAuthorizationOfAction_MEMBER_cardId_exists_and_user_not_matches_throwsForbiddenException() {
+	void getCardAfterAuthorization_MEMBER_cardId_exists_and_user_not_matches_throwsForbiddenException() {
 
 		final var headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer 12345");
@@ -126,11 +126,11 @@ class AuthorizationServiceTest {
 				.build();
 		when(cardRepository.findById(1L)).thenReturn(Optional.of(cardDto));
 
-		assertThrows(ForbiddenException.class, () -> authorizationService.checkAuthorizationOfAction(headers, 1L));
+		assertThrows(ForbiddenException.class, () -> authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 
 	@Test
-	void checkAuthorizationOfAction_MEMBER_cardId_not_exists_throwsForbiddenException() {
+	void getCardAfterAuthorization_MEMBER_cardId_not_exists_returnNull() {
 
 		final var headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer 12345");
@@ -145,7 +145,7 @@ class AuthorizationServiceTest {
 		when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
 		when(cardRepository.findById(1L)).thenReturn(Optional.empty());
 
-		assertThrows(ForbiddenException.class, () -> authorizationService.checkAuthorizationOfAction(headers, 1L));
+		assertNull(authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 
 	@Test
@@ -175,7 +175,7 @@ class AuthorizationServiceTest {
 		when(jwtService.extractUsername("12345")).thenReturn("a@b.com");
 		when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.empty());
 
-		assertThrows(ForbiddenException.class, () -> authorizationService.checkAuthorizationOfAction(headers, 1L));
+		assertThrows(ForbiddenException.class, () -> authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 
 	@Test
@@ -186,6 +186,6 @@ class AuthorizationServiceTest {
 		when(jwtService.extractUsername(null)).thenReturn(null);
 		when(userRepository.findByEmail(null)).thenReturn(Optional.empty());
 
-		assertThrows(ForbiddenException.class, () -> authorizationService.checkAuthorizationOfAction(headers, 1L));
+		assertThrows(ForbiddenException.class, () -> authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
 }

@@ -43,4 +43,3 @@ public class TokenDto {
 	@JoinColumn(name = "user_id")
 	public UserDto user;
 }
-

@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -352,7 +351,7 @@ class CardServiceTest {
 				.creationDate(LocalDate.now())
 				.status(Status.TO_DO)
 				.build();
-		when(cardRepository.findById(cardId)).thenReturn(Optional.of(cardDto));
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(cardDto);
 
 		final var cardResponse = CardResponse.builder()
 				.name("name 1")
@@ -365,8 +364,6 @@ class CardServiceTest {
 
 		final var response = cardService.getCardById(headers, cardId);
 		assertEquals(cardResponse, response);
-
-		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 	}
 
 	@Test
@@ -375,10 +372,9 @@ class CardServiceTest {
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
 
-		when(cardRepository.findById(cardId)).thenReturn(Optional.empty());
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(null);
 
 		assertNull(cardService.getCardById(headers, cardId));
-		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 	}
 
 	@Test
@@ -440,7 +436,7 @@ class CardServiceTest {
 				.creationDate(LocalDate.now())
 				.status(Status.TO_DO)
 				.build();
-		when(cardRepository.findById(cardId)).thenReturn(Optional.of(cardDto));
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(cardDto);
 
 		final var cardDtoUpdate = CardDto.builder()
 				.name("name")
@@ -463,7 +459,7 @@ class CardServiceTest {
 		final var response = cardService.updateCard(headers, cardId, request);
 		assertEquals(cardResponse, response);
 
-		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
+		verify(authorizationService).getCardAfterAuthorization(headers, cardId);
 	}
 
 	@Test
@@ -475,10 +471,10 @@ class CardServiceTest {
 				.name("name")
 				.build();
 
-		when(cardRepository.findById(cardId)).thenReturn(Optional.empty());
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(null);
 
 		assertNull(cardService.updateCard(headers, cardId, request));
-		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
+		verify(authorizationService).getCardAfterAuthorization(headers, cardId);
 		verify(cardRepository, times(0)).save(any());
 	}
 
@@ -488,11 +484,11 @@ class CardServiceTest {
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
 
-		when(cardRepository.existsById(cardId)).thenReturn(true);
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(CardDto.builder()
+				.build());
 
 		assertTrue(cardService.deleteCard(headers, cardId));
 
-		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 		verify(cardRepository, times(1)).deleteById(cardId);
 	}
 
@@ -502,11 +498,10 @@ class CardServiceTest {
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
 
-		when(cardRepository.existsById(cardId)).thenReturn(false);
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(null);
 
 		assertFalse(cardService.deleteCard(headers, cardId));
 
-		verify(authorizationService).checkAuthorizationOfAction(headers, cardId);
 		verify(cardRepository, times(0)).deleteById(cardId);
 	}
 }

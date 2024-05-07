@@ -43,11 +43,10 @@ public class CardService {
 
 		final var filters = cardsVO.getFilters();
 		final var userId = user.getRole() == Role.ADMIN
-			? null
-			: user.getId();
+				? null
+				: user.getId();
 
-		final var spec = CardSpecifications.createSpecification(filters,
-			userId);
+		final var spec = CardSpecifications.createSpecification(filters, userId);
 		final var cardPage = cardRepository.findAll(spec, page);
 
 		return cardAssembler.toModelPage(cardPage);
@@ -55,10 +54,7 @@ public class CardService {
 
 	public CardResponse getCardById(final HttpHeaders headers, final Long cardId) {
 
-		authorizationService.checkAuthorizationOfAction(headers, cardId);
-
-		final var cardDto = cardRepository.findById(cardId)
-			.orElse(null);
+		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
 
 		return cardAssembler.toModel(cardDto);
 	}
@@ -68,13 +64,13 @@ public class CardService {
 		final var user = authorizationService.getUser(headers);
 
 		final var cardDto = CardDto.builder()
-			.name(createCardRequest.getName())
-			.description(createCardRequest.getDescription())
-			.color(createCardRequest.getColor())
-			.status(Status.TO_DO)
-			.creationDate(LocalDate.now())
-			.user(user)
-			.build();
+				.name(createCardRequest.getName())
+				.description(createCardRequest.getDescription())
+				.color(createCardRequest.getColor())
+				.status(Status.TO_DO)
+				.creationDate(LocalDate.now())
+				.user(user)
+				.build();
 
 		final var createdCard = cardRepository.save(cardDto);
 
@@ -83,10 +79,7 @@ public class CardService {
 
 	public CardResponse updateCard(final HttpHeaders headers, final Long cardId, @NonNull final UpdateCardRequest request) {
 
-		authorizationService.checkAuthorizationOfAction(headers, cardId);
-
-		final var cardDto = cardRepository.findById(cardId)
-			.orElse(null);
+		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
 
 		if (cardDto == null) {
 			return null;
@@ -112,9 +105,9 @@ public class CardService {
 
 	public boolean deleteCard(final HttpHeaders headers, final Long cardId) {
 
-		authorizationService.checkAuthorizationOfAction(headers, cardId);
+		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
 
-		if (cardRepository.existsById(cardId)) {
+		if (cardDto != null) {
 			cardRepository.deleteById(cardId);
 			return true;
 		}

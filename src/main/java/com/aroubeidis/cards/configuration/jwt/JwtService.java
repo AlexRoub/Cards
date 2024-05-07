@@ -1,4 +1,4 @@
-package com.aroubeidis.cards.service;
+package com.aroubeidis.cards.configuration.jwt;
 
 import java.security.Key;
 import java.util.Date;

@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import com.aroubeidis.cards.configuration.jwt.JwtService;
 import com.aroubeidis.cards.entities.CardDto;
 import com.aroubeidis.cards.entities.UserDto;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
@@ -22,23 +23,27 @@ public class AuthorizationService {
 	private final CardRepository cardRepository;
 	private final JwtService jwtService;
 
-	public void checkAuthorizationOfAction(final HttpHeaders headers, final Long cardId) {
+	public CardDto getCardAfterAuthorization(final HttpHeaders headers, final Long cardId) {
 
 		final var user = getUser(headers);
 		final var userId = user.getId();
 		final var role = user.getRole();
 
-		//ADMIN is considered to have access in all cards
-		if (role == Role.MEMBER) {
-			final var card = cardRepository.findById(cardId);
+		final var optCard = cardRepository.findById(cardId);
 
-			card.map(CardDto::getUser)
-				.map(UserDto::getId)
-				.filter(userId::equals)
-				.orElseThrow(() -> ForbiddenException.builder()
-					.message("User is not authorized for this action.")
-					.build());
+		if (optCard.isEmpty()) {
+			return null;
 		}
+
+		//ADMIN is considered to have access in all cards
+		return role == Role.ADMIN
+				? optCard.get()
+				: optCard.filter(card -> card.getUser()
+								.getId()
+								.equals(userId))
+						.orElseThrow(() -> ForbiddenException.builder()
+								.message("User is not authorized for this action.")
+								.build());
 	}
 
 	public UserDto getUser(final HttpHeaders headers) {
@@ -47,15 +52,15 @@ public class AuthorizationService {
 		final var email = jwtService.extractUsername(token);
 
 		return userRepository.findByEmail(email)
-			.orElseThrow(() -> ForbiddenException.builder()
-				.message("User doesn't exist.")
-				.build());
+				.orElseThrow(() -> ForbiddenException.builder()
+						.message("User doesn't exist.")
+						.build());
 	}
 
 	private String getToken(final HttpHeaders headers) {
 
 		return Optional.ofNullable(headers.getFirst(HttpHeaders.AUTHORIZATION))
-			.map(auth -> auth.substring(7))
-			.orElse(null);
+				.map(auth -> auth.substring(7))
+				.orElse(null);
 	}
 }

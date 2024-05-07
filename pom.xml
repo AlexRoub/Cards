@@ -75,6 +75,13 @@
 			<artifactId>lombok</artifactId>
 		</dependency>
 
+		<!-- Java Servlet API -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -82,26 +89,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.7.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.7.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock</artifactId>
-			<version>2.27.2</version>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.7.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -131,11 +121,19 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Google -->
+		<!-- Google Collections -->
 		<dependency>
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>1.0</version>
+		</dependency>
+
+		<!-- WireMock standalone server -->
+		<dependency>
+			<groupId>org.wiremock</groupId>
+			<artifactId>wiremock-standalone</artifactId>
+			<version>3.5.4</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -179,6 +177,9 @@
 							<param>${project.groupId}.*.configuration.*</param>
 							<param>${project.groupId}.*.specifications.*</param>
 						</excludedClasses>
+						<excludedTestClasses>
+							<param>${project.groupId}.*.IT.*</param>
+						</excludedTestClasses>
 					</configuration>
 				</plugin>
 			</plugins>
