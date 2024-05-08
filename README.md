@@ -64,7 +64,8 @@ been registered, otherwise you will always get 403 Forbidden Access.
 
 In order to do that you can use the below curl:
 
-```curl --location 'http://localhost:8080/api/v1/auth/register' \
+```
+curl --location 'http://localhost:8080/api/v1/auth/register' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "email": "adminUser@gmail.com",
