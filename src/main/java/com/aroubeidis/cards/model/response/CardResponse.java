@@ -2,19 +2,19 @@ package com.aroubeidis.cards.model.response;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
-@AllArgsConstructor
 @Data
-@ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CardResponse {
 
 	@JsonProperty("id")
