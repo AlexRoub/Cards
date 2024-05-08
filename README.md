@@ -77,9 +77,9 @@ As a role, user must choose between ADMIN and MEMBER.
 Also, the email provided must be in email format, otherwise you will get 400 Bad Request.
 
 After having registered a user, you must copy in your clipboard the value of **accessToken**.
-This will be the token that will give you the access to any further action.
+This will be the token that will give the access in any further action.
 
-Now, let's try to create a new card.Try using the below curl:
+Now, let's try to create a new card. Try using the below curl:
 
 ```
 curl --location 'http://localhost:8080/api/v1/cards/create' \
@@ -98,9 +98,9 @@ having 6 alphanumerical values prefixed with #.
 In the response of this endpoint you will see all the information of the newly created card,
 along with id, status and creation date. Null values are not visible in the final response.
 
-_**Note**_: There is an option to see the H2 DB schema and data via http://localhost:8080/h2-console endpoint.
-As JDBC url, use **jdbc:h2:mem:cardsdb** with the predefined configuration. Keep in mind, that
-in each restart of the application, the previously inserted data will be lost.
+> There is an option to see the H2 DB schema and data via http://localhost:8080/h2-console endpoint.
+> As JDBC url, use **jdbc:h2:mem:cardsdb** with the predefined configuration. Keep in mind, that
+> in each restart of the application, the previously inserted data will be lost.
 
 In order to get the information of this singe card, we can use the below curl:
 
@@ -113,7 +113,7 @@ Again, you must use your own token to fetch the previously created card.
 As a cardId, in the path, you must use the id received from the previous call.
 If user is a MEMBER, they will only be able to see the cards that they have created.
 
-In order to see all the cards or all the cards a user has created, we can use the below curl:
+In order to see all the cards or the cards a user has created, we can use the below curl:
 
 ```
 curl --location 'http://localhost:8080/api/v1/cards' \
@@ -123,12 +123,12 @@ curl --location 'http://localhost:8080/api/v1/cards' \
 ```
 
 This endpoint responds with a page. The default values are page: 0 and size: integer max(2147483647).  
-If you want a specific page, then you must provide the appropriate page, size request parameters.  
+If you want a specific page, then you must provide the desired page and size request parameters.  
 Also, you have the ability to sort the response. The possible sorting values are by name, color, status and creationDate. The default
 sorting, if not provided, is
 creationDate.DESC, as you can also see in the contract.  
 An extra feature of this endpoint is that you can filter the response based on your needs.
-This can be achieved, providing a request body.
+This can be achieved by providing a request body.
 The available filters are by name, color, status and creation date.
 
 A complete curl would look like this:
