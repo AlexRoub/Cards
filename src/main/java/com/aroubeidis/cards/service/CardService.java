@@ -77,7 +77,8 @@ public class CardService {
 		return cardAssembler.toModel(createdCard);
 	}
 
-	public CardResponse updateCard(final HttpHeaders headers, final Long cardId, @NonNull final UpdateCardRequest request) {
+	public CardResponse updateCard(final HttpHeaders headers, final Long cardId, @NonNull final UpdateCardRequest request)
+			throws Exception {
 
 		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
 
@@ -95,7 +96,7 @@ public class CardService {
 			cardDto.setColor(request.getColor());
 		}
 		if (request.getStatus() != null) {
-			cardDto.setStatus(request.getStatus());
+			cardDto.setStatus(Status.findByValue(request.getStatus()));
 		}
 
 		final var card = cardRepository.save(cardDto);

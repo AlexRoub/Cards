@@ -1,7 +1,5 @@
 package com.aroubeidis.cards.model.request;
 
-import com.aroubeidis.cards.model.Status;
-
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +18,5 @@ public class UpdateCardRequest {
 	private String description;
 	@Pattern(regexp = "^#[a-zA-Z0-9]{6}$")
 	private String color;
-	private Status status;
+	private String status;
 }

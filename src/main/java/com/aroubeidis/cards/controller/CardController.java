@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aroubeidis.cards.exceptions.BadRequestException;
 import com.aroubeidis.cards.model.GetCardsVO;
 import com.aroubeidis.cards.model.RequestFilters;
 import com.aroubeidis.cards.model.request.CreateCardRequest;
@@ -37,18 +36,18 @@ public class CardController {
 
 	@PostMapping
 	public Page<CardResponse> getCards(@RequestHeader final HttpHeaders headers,
-		@RequestParam(defaultValue = "${constants.defaultPage:0}") final int page,
-		@RequestParam(defaultValue = "${constants.defaultSize:10}") final int size,
-		@RequestParam(required = false, defaultValue = "creationDate, desc") final String[] sort,
-		@RequestBody final RequestFilters filters) {
+			@RequestParam(defaultValue = "${constants.defaultPage:0}") final int page,
+			@RequestParam(defaultValue = "${constants.defaultSize:10}") final int size,
+			@RequestParam(required = false, defaultValue = "creationDate, desc") final String[] sort,
+			@RequestBody final RequestFilters filters) {
 
 		final var getCardsVO = GetCardsVO.builder()
-			.headers(headers)
-			.page(page)
-			.size(size)
-			.sort(sort)
-			.filters(filters)
-			.build();
+				.headers(headers)
+				.page(page)
+				.size(size)
+				.sort(sort)
+				.filters(filters)
+				.build();
 
 		return cardService.getAllCards(getCardsVO);
 	}
@@ -59,32 +58,33 @@ public class CardController {
 		final var card = cardService.getCardById(headers, cardId);
 
 		return Optional.ofNullable(card)
-			.map(ResponseEntity::ok)
-			.orElseGet(() -> ResponseEntity.notFound()
-				.build());
+				.map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.notFound()
+						.build());
 	}
 
 	@PostMapping("/create")
 	public ResponseEntity<CardResponse> createCard(@RequestHeader final HttpHeaders headers,
-		@RequestBody @Valid final CreateCardRequest createCardRequest) {
+			@RequestBody @Valid final CreateCardRequest createCardRequest) {
 
 		final var card = cardService.createCard(headers, createCardRequest);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(card);
+				.body(card);
 	}
 
 	@PatchMapping("/{cardId}")
 	public ResponseEntity<CardResponse> updateCard(@RequestHeader final HttpHeaders headers,
-		@PathVariable final Long cardId,
-		@RequestBody @Valid final UpdateCardRequest request) {
+			@PathVariable final Long cardId,
+			@RequestBody @Valid final UpdateCardRequest request)
+			throws Exception {
 
 		final var updatedCard = cardService.updateCard(headers, cardId, request);
 
 		return Optional.ofNullable(updatedCard)
-			.map(ResponseEntity::ok)
-			.orElseGet(() -> ResponseEntity.notFound()
-				.build());
+				.map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.notFound()
+						.build());
 	}
 
 	@DeleteMapping("/{cardId}")
@@ -93,9 +93,9 @@ public class CardController {
 		final var deleted = cardService.deleteCard(headers, cardId);
 
 		return deleted
-			? ResponseEntity.noContent()
-			.build()
-			: ResponseEntity.notFound()
-				.build();
+				? ResponseEntity.noContent()
+				.build()
+				: ResponseEntity.notFound()
+						.build();
 	}
 }
