@@ -117,7 +117,8 @@ class CardControllerTest {
 	}
 
 	@Test
-	void updateCard_success() {
+	void updateCard_success()
+			throws Exception {
 
 		final var headers = new HttpHeaders();
 		final var request = UpdateCardRequest.builder()
@@ -142,7 +143,8 @@ class CardControllerTest {
 	}
 
 	@Test
-	void updateCard_notFound() {
+	void updateCard_notFound()
+			throws Exception {
 
 		final var headers = new HttpHeaders();
 		final var request = UpdateCardRequest.builder()

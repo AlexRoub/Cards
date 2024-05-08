@@ -22,7 +22,7 @@ public class AuthenticationControllerIT extends AbstractIT {
 
 		final var headers = new HttpHeaders();
 		final var registerRequest = RegisterRequest.builder()
-				.email("abcd@gmail.com")
+				.email("abc@gmail.com")
 				.password("12345")
 				.role(Role.ADMIN)
 				.build();

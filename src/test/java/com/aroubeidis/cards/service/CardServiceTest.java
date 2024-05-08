@@ -418,7 +418,8 @@ class CardServiceTest {
 	}
 
 	@Test
-	void updateCard_cardExists() {
+	void updateCard_cardExists()
+			throws Exception {
 
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
@@ -426,7 +427,7 @@ class CardServiceTest {
 				.name("name")
 				.description("Description")
 				.color("#ff1111")
-				.status(Status.IN_PROGRESS)
+				.status(Status.IN_PROGRESS.getValue())
 				.build();
 
 		final var cardDto = CardDto.builder()
@@ -463,7 +464,8 @@ class CardServiceTest {
 	}
 
 	@Test
-	void updateCard_cardNotExists_returnNull() {
+	void updateCard_cardNotExists_returnNull()
+			throws Exception {
 
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
