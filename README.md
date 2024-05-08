@@ -7,7 +7,7 @@ that allows users to create and manage tasks in the form of cards.
 
 ### Security
 
-* User registration and login(authentication) with JWT authentication
+* User registration and login with JWT authentication
 * Password encryption using BCrypt
 * Refresh token
 * Logout mechanism
