@@ -1,4 +1,4 @@
-# Cards Api
+# Cards API
 
 This project demonstrates the implementation of an application called Cards,
 that allows users to create and manage tasks in the form of cards.
@@ -12,7 +12,7 @@ that allows users to create and manage tasks in the form of cards.
 * Refresh token
 * Logout mechanism
 
-### Cards API
+### Cards
 
 * Create card
 * Get all cards based on user role
