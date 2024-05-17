@@ -28,8 +28,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.aroubeidis.cards.configuration.jwt.JwtService;
-import com.aroubeidis.cards.entities.TokenDto;
-import com.aroubeidis.cards.entities.UserDto;
+import com.aroubeidis.cards.entities.TokenEntity;
+import com.aroubeidis.cards.entities.UserEntity;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.model.TokenType;
@@ -47,7 +47,7 @@ import jakarta.servlet.http.HttpServletResponse;
 class AuthenticationServiceTest {
 
 	@Captor
-	private ArgumentCaptor<Iterable<TokenDto>> iterableTokenCaptor;
+	private ArgumentCaptor<Iterable<TokenEntity>> iterableTokenCaptor;
 
 	@Mock
 	private UserRepository userRepository;
@@ -78,7 +78,7 @@ class AuthenticationServiceTest {
 
 		when(passwordEncoder.encode(request.getPassword())).thenReturn("fa54dags");
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.email("a@b.com")
 				.password("fa54dags")
 				.role(Role.ADMIN)
@@ -90,14 +90,14 @@ class AuthenticationServiceTest {
 		final var refreshToken = "eyJhbGciOiJIgGte45U";
 		when(jwtService.generateRefreshToken(user)).thenReturn(refreshToken);
 
-		final var tokenDto = TokenDto.builder()
+		final var tokenEntity = TokenEntity.builder()
 				.user(user)
 				.token(accessToken)
 				.tokenType(TokenType.BEARER)
 				.expired(false)
 				.revoked(false)
 				.build();
-		when(tokenRepository.save(tokenDto)).thenReturn(tokenDto);
+		when(tokenRepository.save(tokenEntity)).thenReturn(tokenEntity);
 
 		final var response = authenticationService.register(request);
 
@@ -113,7 +113,7 @@ class AuthenticationServiceTest {
 				.password("1234")
 				.build();
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.password("fa54dags")
@@ -126,24 +126,24 @@ class AuthenticationServiceTest {
 		final var refreshToken = "eyJhbGciOiJIgGte45U";
 		when(jwtService.generateRefreshToken(user)).thenReturn(refreshToken);
 
-		final var tokenDto = TokenDto.builder()
+		final var tokenEntity = TokenEntity.builder()
 				.user(user)
 				.token(accessToken)
 				.tokenType(TokenType.BEARER)
 				.expired(false)
 				.revoked(false)
 				.build();
-		when(tokenRepository.findAllValidTokenByUser(1L)).thenReturn(List.of(tokenDto));
-		when(tokenRepository.saveAll(iterableTokenCaptor.capture())).thenReturn(List.of(tokenDto));
+		when(tokenRepository.findAllValidTokenByUser(1L)).thenReturn(List.of(tokenEntity));
+		when(tokenRepository.saveAll(iterableTokenCaptor.capture())).thenReturn(List.of(tokenEntity));
 
 		final var response = authenticationService.authenticate(request);
 		assertEquals(accessToken, response.getAccessToken());
 		assertEquals(refreshToken, response.getRefreshToken());
 
 		iterableTokenCaptor.getValue()
-				.forEach(dto -> assertTrue(dto.isExpired()));
+				.forEach(entity -> assertTrue(entity.isExpired()));
 		iterableTokenCaptor.getValue()
-				.forEach(dto -> assertTrue(dto.isRevoked()));
+				.forEach(entity -> assertTrue(entity.isRevoked()));
 
 		verify(tokenRepository).save(any());
 	}
@@ -156,7 +156,7 @@ class AuthenticationServiceTest {
 				.password("1234")
 				.build();
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.password("fa54dags")
@@ -204,7 +204,7 @@ class AuthenticationServiceTest {
 		final var email = "a@b.com";
 		when(jwtService.extractUsername("12345")).thenReturn(email);
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.ADMIN)
@@ -214,22 +214,22 @@ class AuthenticationServiceTest {
 		when(jwtService.generateToken(user)).thenReturn("54321");
 		when(response.getOutputStream()).thenReturn(outputStream);
 
-		final var tokenDto = TokenDto.builder()
+		final var tokenEntity = TokenEntity.builder()
 				.user(user)
 				.token("54321")
 				.tokenType(TokenType.BEARER)
 				.expired(false)
 				.revoked(false)
 				.build();
-		when(tokenRepository.findAllValidTokenByUser(1L)).thenReturn(List.of(tokenDto));
-		when(tokenRepository.saveAll(iterableTokenCaptor.capture())).thenReturn(List.of(tokenDto));
+		when(tokenRepository.findAllValidTokenByUser(1L)).thenReturn(List.of(tokenEntity));
+		when(tokenRepository.saveAll(iterableTokenCaptor.capture())).thenReturn(List.of(tokenEntity));
 
 		authenticationService.refreshToken(request, response);
 
 		iterableTokenCaptor.getValue()
-				.forEach(dto -> assertTrue(dto.isExpired()));
+				.forEach(entity -> assertTrue(entity.isExpired()));
 		iterableTokenCaptor.getValue()
-				.forEach(dto -> assertTrue(dto.isRevoked()));
+				.forEach(entity -> assertTrue(entity.isRevoked()));
 
 		verify(tokenRepository).save(any());
 		verify(objectMapper).writeValue((OutputStream) any(), any());
@@ -264,7 +264,7 @@ class AuthenticationServiceTest {
 		final var email = "a@b.com";
 		when(jwtService.extractUsername("12345")).thenReturn(email);
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.ADMIN)

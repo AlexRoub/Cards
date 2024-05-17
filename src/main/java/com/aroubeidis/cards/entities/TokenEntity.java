@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenDto {
+public class TokenEntity {
 
 	@Id
 	@GeneratedValue
@@ -41,5 +41,5 @@ public class TokenDto {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
-	public UserDto user;
+	public UserEntity user;
 }

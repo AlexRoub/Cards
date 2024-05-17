@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.aroubeidis.cards.entities.CardDto;
+import com.aroubeidis.cards.entities.CardEntity;
 import com.aroubeidis.cards.model.RequestFilters;
 import com.aroubeidis.cards.model.Status;
 import com.google.common.collect.Lists;
@@ -15,43 +15,45 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-public class CardSpecifications {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CardSpecifications {
 
-	private static Specification<CardDto> nameLike(final String name) {
+	public static Specification<CardEntity> createSpecification(final RequestFilters filters, final Long userId) {
+
+		return (root, query, criteriaBuilder) -> getPredicate(filters, userId, root, query, criteriaBuilder);
+	}
+
+	private static Specification<CardEntity> nameLike(final String name) {
 
 		return (root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
 	}
 
-	private static Specification<CardDto> colorEquals(final String color) {
+	private static Specification<CardEntity> colorEquals(final String color) {
 
 		return (root, query, criteriaBuilder) -> criteriaBuilder.equal(criteriaBuilder.lower(root.get("color")), color.toLowerCase());
 	}
 
-	private static Specification<CardDto> statusEquals(final Status status) {
+	private static Specification<CardEntity> statusEquals(final Status status) {
 
 		return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
 	}
 
-	private static Specification<CardDto> creationDateEquals(final LocalDate creationDate) {
+	private static Specification<CardEntity> creationDateEquals(final LocalDate creationDate) {
 
 		return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("creationDate"), creationDate);
 	}
 
-	private static Specification<CardDto> userIdEquals(final Long userId) {
+	private static Specification<CardEntity> userIdEquals(final Long userId) {
 
 		return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("user")
 				.get("id"), userId);
 	}
 
-	public static Specification<CardDto> createSpecification(final RequestFilters filters, final Long userId) {
-
-		return (root, query, criteriaBuilder) -> getPredicate(filters, userId, root, query, criteriaBuilder);
-	}
-
 	private static Predicate getPredicate(final RequestFilters filters,
-			final Long userId,
-			final Root<CardDto> root,
+			final Long userId, final Root<CardEntity> root,
 			final CriteriaQuery<?> query,
 			final CriteriaBuilder criteriaBuilder) {
 

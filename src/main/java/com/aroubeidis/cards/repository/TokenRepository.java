@@ -6,14 +6,15 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.aroubeidis.cards.entities.TokenDto;
+import com.aroubeidis.cards.entities.TokenEntity;
 
-public interface TokenRepository extends JpaRepository<TokenDto, Long> {
+public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
 
 	@Query(
-		"select t from TokenDto t inner join UserDto u on t.user.id = u.id " + "where u.id = :id and (t.expired = false or t.revoked = "
+			"select t from TokenEntity t inner join UserEntity u on t.user.id = u.id " + "where u.id = :id and (t.expired = false or t.revoked"
+					+ " = "
 			+ "false)")
-	List<TokenDto> findAllValidTokenByUser(Long id);
+	List<TokenEntity> findAllValidTokenByUser(Long id);
 
-	Optional<TokenDto> findByToken(String token);
+	Optional<TokenEntity> findByToken(String token);
 }

@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.aroubeidis.cards.entities.TokenDto;
+import com.aroubeidis.cards.entities.TokenEntity;
 import com.aroubeidis.cards.repository.TokenRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 class LogoutServiceTest {
 
 	@Captor
-	private ArgumentCaptor<TokenDto> tokenCaptor;
+	private ArgumentCaptor<TokenEntity> tokenCaptor;
 
 	@Mock
 	private TokenRepository tokenRepository;
@@ -46,10 +46,10 @@ class LogoutServiceTest {
 			final var response = mock(HttpServletResponse.class);
 
 			when(request.getHeader("Authorization")).thenReturn("Bearer 12345");
-			final var tokenDto = TokenDto.builder()
+			final var tokenEntity = TokenEntity.builder()
 					.build();
-			when(tokenRepository.findByToken("12345")).thenReturn(Optional.of(tokenDto));
-			when(tokenRepository.save(tokenCaptor.capture())).thenReturn(tokenDto);
+			when(tokenRepository.findByToken("12345")).thenReturn(Optional.of(tokenEntity));
+			when(tokenRepository.save(tokenCaptor.capture())).thenReturn(tokenEntity);
 
 			logoutService.logout(request, response, null);
 

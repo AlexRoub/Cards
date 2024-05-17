@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 
 import com.aroubeidis.cards.configuration.jwt.JwtService;
-import com.aroubeidis.cards.entities.CardDto;
-import com.aroubeidis.cards.entities.UserDto;
+import com.aroubeidis.cards.entities.CardEntity;
+import com.aroubeidis.cards.entities.UserEntity;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.model.Status;
@@ -57,13 +57,13 @@ class AuthorizationServiceTest {
 
 		when(jwtService.extractUsername("12345")).thenReturn("a@b.com");
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.ADMIN)
 				.build();
 		when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
-		when(cardRepository.findById(1L)).thenReturn(Optional.of(CardDto.builder()
+		when(cardRepository.findById(1L)).thenReturn(Optional.of(CardEntity.builder()
 				.build()));
 		assertNotNull(authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
@@ -76,14 +76,14 @@ class AuthorizationServiceTest {
 
 		when(jwtService.extractUsername("12345")).thenReturn("a@b.com");
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.MEMBER)
 				.build();
 		when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 				.name("name")
 				.description("description")
 				.color("#ff0000")
@@ -91,7 +91,7 @@ class AuthorizationServiceTest {
 				.status(Status.TO_DO)
 				.user(user)
 				.build();
-		when(cardRepository.findById(1L)).thenReturn(Optional.of(cardDto));
+		when(cardRepository.findById(1L)).thenReturn(Optional.of(cardEntity));
 
 		assertNotNull(authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
@@ -104,19 +104,19 @@ class AuthorizationServiceTest {
 
 		when(jwtService.extractUsername("12345")).thenReturn("a@b.com");
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.MEMBER)
 				.build();
 		when(userRepository.findByEmail("a@b.com")).thenReturn(Optional.of(user));
 
-		final var otherUser = UserDto.builder()
+		final var otherUser = UserEntity.builder()
 				.id(2L)
 				.email("b@c.com")
 				.role(Role.MEMBER)
 				.build();
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 				.name("name")
 				.description("description")
 				.color("#ff0000")
@@ -124,7 +124,7 @@ class AuthorizationServiceTest {
 				.status(Status.TO_DO)
 				.user(otherUser)
 				.build();
-		when(cardRepository.findById(1L)).thenReturn(Optional.of(cardDto));
+		when(cardRepository.findById(1L)).thenReturn(Optional.of(cardEntity));
 
 		assertThrows(ForbiddenException.class, () -> authorizationService.getCardAfterAuthorization(headers, 1L));
 	}
@@ -137,7 +137,7 @@ class AuthorizationServiceTest {
 
 		when(jwtService.extractUsername("12345")).thenReturn("a@b.com");
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.MEMBER)
@@ -156,7 +156,7 @@ class AuthorizationServiceTest {
 
 		when(jwtService.extractUsername("12345")).thenReturn("a@b.com");
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.MEMBER)

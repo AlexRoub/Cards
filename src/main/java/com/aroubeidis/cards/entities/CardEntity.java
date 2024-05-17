@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CardDto implements Serializable {
+public class CardEntity implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = -4319487367611835303L;
@@ -53,5 +53,5 @@ public class CardDto implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
-	private UserDto user;
+	private UserEntity user;
 }

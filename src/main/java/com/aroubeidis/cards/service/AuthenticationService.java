@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aroubeidis.cards.configuration.jwt.JwtService;
-import com.aroubeidis.cards.entities.TokenDto;
-import com.aroubeidis.cards.entities.UserDto;
+import com.aroubeidis.cards.entities.TokenEntity;
+import com.aroubeidis.cards.entities.UserEntity;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.TokenType;
 import com.aroubeidis.cards.model.request.AuthenticationRequest;
@@ -37,7 +37,7 @@ public class AuthenticationService {
 
 	public AuthenticationResponse register(final RegisterRequest request) {
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.email(request.getEmail())
 				.password(passwordEncoder.encode(request.getPassword()))
 				.role(request.getRole())
@@ -104,9 +104,9 @@ public class AuthenticationService {
 		}
 	}
 
-	private void saveUserToken(final UserDto user, final String jwtToken) {
+	private void saveUserToken(final UserEntity user, final String jwtToken) {
 
-		final var token = TokenDto.builder()
+		final var token = TokenEntity.builder()
 				.user(user)
 				.token(jwtToken)
 				.tokenType(TokenType.BEARER)
@@ -117,7 +117,7 @@ public class AuthenticationService {
 		tokenRepository.save(token);
 	}
 
-	private void revokeAllUserTokens(final UserDto user) {
+	private void revokeAllUserTokens(final UserEntity user) {
 
 		final var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
 

@@ -27,8 +27,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 
 import com.aroubeidis.cards.assembler.CardAssembler;
-import com.aroubeidis.cards.entities.CardDto;
-import com.aroubeidis.cards.entities.UserDto;
+import com.aroubeidis.cards.entities.CardEntity;
+import com.aroubeidis.cards.entities.UserEntity;
 import com.aroubeidis.cards.exceptions.BadRequestException;
 import com.aroubeidis.cards.model.GetCardsVO;
 import com.aroubeidis.cards.model.RequestFilters;
@@ -70,7 +70,7 @@ class CardServiceTest {
 					.filters(filters)
 					.build();
 
-			final var user = UserDto.builder()
+			final var user = UserEntity.builder()
 					.id(1L)
 					.email("a@b.com")
 					.role(Role.ADMIN)
@@ -80,22 +80,22 @@ class CardServiceTest {
 			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
 			final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
 
-			final var cardDto1 = CardDto.builder()
+			final var cardEntity1 = CardEntity.builder()
 					.name("name 2")
 					.description("description 2")
 					.color("#ff0000")
 					.creationDate(LocalDate.now())
 					.status(Status.TO_DO)
 					.build();
-			final var cardDto2 = CardDto.builder()
+			final var cardEntity2 = CardEntity.builder()
 					.name("name 1")
 					.description("description 1")
 					.color("#ff0011")
 					.creationDate(LocalDate.now())
 					.status(Status.IN_PROGRESS)
 					.build();
-			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto2, cardDto1));
-			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
+			final var cardEntityPage = new PageImpl<CardEntity>(List.of(cardEntity2, cardEntity1));
+			when(cardRepository.findAll((Specification<CardEntity>) any(), eq(pageable))).thenReturn(cardEntityPage);
 
 			final var cardResponse1 = CardResponse.builder()
 					.name("name 1")
@@ -112,7 +112,7 @@ class CardServiceTest {
 					.status(Status.TO_DO.getValue())
 					.build();
 			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
-			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			when(cardAssembler.toModelPage(cardEntityPage)).thenReturn(cardResponsePage);
 
 			final var response = cardService.getAllCards(cardsVO);
 			assertEquals(cardResponsePage, response);
@@ -138,7 +138,7 @@ class CardServiceTest {
 					.filters(filters)
 					.build();
 
-			final var user = UserDto.builder()
+			final var user = UserEntity.builder()
 					.id(1L)
 					.email("a@b.com")
 					.role(Role.ADMIN)
@@ -147,15 +147,15 @@ class CardServiceTest {
 
 			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
 			final var pageable = PageRequest.of(cardsVO.getPage(), Integer.MAX_VALUE, sortBy);
-			final var cardDto = CardDto.builder()
+			final var cardEntity = CardEntity.builder()
 					.name("name 2")
 					.description("description 2")
 					.color("#ff0000")
 					.creationDate(LocalDate.now())
 					.status(Status.TO_DO)
 					.build();
-			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto));
-			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
+			final var cardEntityPage = new PageImpl<CardEntity>(List.of(cardEntity));
+			when(cardRepository.findAll((Specification<CardEntity>) any(), eq(pageable))).thenReturn(cardEntityPage);
 
 			final var cardResponse = CardResponse.builder()
 					.name("name 2")
@@ -165,7 +165,7 @@ class CardServiceTest {
 					.status(Status.TO_DO.getValue())
 					.build();
 			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse));
-			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			when(cardAssembler.toModelPage(cardEntityPage)).thenReturn(cardResponsePage);
 
 			final var response = cardService.getAllCards(cardsVO);
 			assertEquals(cardResponsePage, response);
@@ -191,7 +191,7 @@ class CardServiceTest {
 					.filters(filters)
 					.build();
 
-			final var user = UserDto.builder()
+			final var user = UserEntity.builder()
 					.id(1L)
 					.email("a@b.com")
 					.role(Role.ADMIN)
@@ -200,14 +200,14 @@ class CardServiceTest {
 
 			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
 			final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
-			final var cardDto1 = CardDto.builder()
+			final var cardEntity1 = CardEntity.builder()
 					.name("name 2")
 					.description("description 2")
 					.color("#ff0000")
 					.creationDate(LocalDate.now())
 					.status(Status.TO_DO)
 					.build();
-			final var cardDto2 = CardDto.builder()
+			final var cardEntity2 = CardEntity.builder()
 					.name("name 1")
 					.description("description 1")
 					.color("#ff0011")
@@ -215,8 +215,8 @@ class CardServiceTest {
 							.minusDays(1))
 					.status(Status.IN_PROGRESS)
 					.build();
-			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto1, cardDto2));
-			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
+			final var cardEntityPage = new PageImpl<CardEntity>(List.of(cardEntity1, cardEntity2));
+			when(cardRepository.findAll((Specification<CardEntity>) any(), eq(pageable))).thenReturn(cardEntityPage);
 
 			final var cardResponse1 = CardResponse.builder()
 					.name("name 1")
@@ -233,7 +233,7 @@ class CardServiceTest {
 					.status(Status.TO_DO.getValue())
 					.build();
 			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
-			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			when(cardAssembler.toModelPage(cardEntityPage)).thenReturn(cardResponsePage);
 
 			final var response = cardService.getAllCards(cardsVO);
 			assertEquals(cardResponsePage, response);
@@ -259,7 +259,7 @@ class CardServiceTest {
 					.filters(filters)
 					.build();
 
-			final var user = UserDto.builder()
+			final var user = UserEntity.builder()
 					.id(1L)
 					.email("a@b.com")
 					.role(Role.MEMBER)
@@ -268,14 +268,14 @@ class CardServiceTest {
 
 			final var sortBy = GeneralUtils.getSort(cardsVO.getSort()[0], cardsVO.getSort()[1]);
 			final var pageable = PageRequest.of(cardsVO.getPage(), cardsVO.getSize(), sortBy);
-			final var cardDto1 = CardDto.builder()
+			final var cardEntity1 = CardEntity.builder()
 					.name("name 2")
 					.description("description 2")
 					.color("#ff0000")
 					.creationDate(LocalDate.now())
 					.status(Status.TO_DO)
 					.build();
-			final var cardDto2 = CardDto.builder()
+			final var cardEntity2 = CardEntity.builder()
 					.name("name 1")
 					.description("description 1")
 					.color("#ff0011")
@@ -283,8 +283,8 @@ class CardServiceTest {
 							.minusDays(1))
 					.status(Status.IN_PROGRESS)
 					.build();
-			final var cardDtoPage = new PageImpl<CardDto>(List.of(cardDto1, cardDto2));
-			when(cardRepository.findAll((Specification<CardDto>) any(), eq(pageable))).thenReturn(cardDtoPage);
+			final var cardEntityPage = new PageImpl<CardEntity>(List.of(cardEntity1, cardEntity2));
+			when(cardRepository.findAll((Specification<CardEntity>) any(), eq(pageable))).thenReturn(cardEntityPage);
 
 			final var cardResponse1 = CardResponse.builder()
 					.name("name 1")
@@ -301,7 +301,7 @@ class CardServiceTest {
 					.status(Status.TO_DO.getValue())
 					.build();
 			final var cardResponsePage = new PageImpl<CardResponse>(List.of(cardResponse1, cardResponse2));
-			when(cardAssembler.toModelPage(cardDtoPage)).thenReturn(cardResponsePage);
+			when(cardAssembler.toModelPage(cardEntityPage)).thenReturn(cardResponsePage);
 
 			final var response = cardService.getAllCards(cardsVO);
 			assertEquals(cardResponsePage, response);
@@ -325,7 +325,7 @@ class CardServiceTest {
 				.filters(filters)
 				.build();
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.ADMIN)
@@ -344,14 +344,14 @@ class CardServiceTest {
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 				.name("name 1")
 				.description("description 1")
 				.color("#ff0000")
 				.creationDate(LocalDate.now())
 				.status(Status.TO_DO)
 				.build();
-		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(cardDto);
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(cardEntity);
 
 		final var cardResponse = CardResponse.builder()
 				.name("name 1")
@@ -360,7 +360,7 @@ class CardServiceTest {
 				.creationDate(LocalDate.now())
 				.status(Status.TO_DO.getValue())
 				.build();
-		when(cardAssembler.toModel(cardDto)).thenReturn(cardResponse);
+		when(cardAssembler.toModel(cardEntity)).thenReturn(cardResponse);
 
 		final var response = cardService.getCardById(headers, cardId);
 		assertEquals(cardResponse, response);
@@ -387,14 +387,14 @@ class CardServiceTest {
 				.color("#ff0000")
 				.build();
 
-		final var user = UserDto.builder()
+		final var user = UserEntity.builder()
 				.id(1L)
 				.email("a@b.com")
 				.role(Role.ADMIN)
 				.build();
 		when(authorizationService.getUser(headers)).thenReturn(user);
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 				.name("name 1")
 				.description("description 1")
 				.color("#ff0000")
@@ -402,7 +402,7 @@ class CardServiceTest {
 				.status(Status.TO_DO)
 				.user(user)
 				.build();
-		when(cardRepository.save(cardDto)).thenReturn(cardDto);
+		when(cardRepository.save(cardEntity)).thenReturn(cardEntity);
 
 		final var cardResponse = CardResponse.builder()
 				.name("name 1")
@@ -411,7 +411,7 @@ class CardServiceTest {
 				.creationDate(LocalDate.now())
 				.status(Status.TO_DO.getValue())
 				.build();
-		when(cardAssembler.toModel(cardDto)).thenReturn(cardResponse);
+		when(cardAssembler.toModel(cardEntity)).thenReturn(cardResponse);
 
 		final var response = cardService.createCard(headers, request);
 		assertEquals(cardResponse, response);
@@ -430,23 +430,23 @@ class CardServiceTest {
 				.status(Status.IN_PROGRESS.getValue())
 				.build();
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 				.name("name 1")
 				.description("description 1")
 				.color("#ff0000")
 				.creationDate(LocalDate.now())
 				.status(Status.TO_DO)
 				.build();
-		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(cardDto);
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(cardEntity);
 
-		final var cardDtoUpdate = CardDto.builder()
+		final var cardEntityUpdate = CardEntity.builder()
 				.name("name")
 				.description("Description")
 				.color("#ff1111")
 				.creationDate(LocalDate.now())
 				.status(Status.IN_PROGRESS)
 				.build();
-		when(cardRepository.save(cardDtoUpdate)).thenReturn(cardDtoUpdate);
+		when(cardRepository.save(cardEntityUpdate)).thenReturn(cardEntityUpdate);
 
 		final var cardResponse = CardResponse.builder()
 				.name("name")
@@ -455,7 +455,7 @@ class CardServiceTest {
 				.creationDate(LocalDate.now())
 				.status(Status.IN_PROGRESS.getValue())
 				.build();
-		when(cardAssembler.toModel(cardDto)).thenReturn(cardResponse);
+		when(cardAssembler.toModel(cardEntity)).thenReturn(cardResponse);
 
 		final var response = cardService.updateCard(headers, cardId, request);
 		assertEquals(cardResponse, response);
@@ -486,7 +486,7 @@ class CardServiceTest {
 		final var headers = new HttpHeaders();
 		final var cardId = 1L;
 
-		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(CardDto.builder()
+		when(authorizationService.getCardAfterAuthorization(headers, cardId)).thenReturn(CardEntity.builder()
 				.build());
 
 		assertTrue(cardService.deleteCard(headers, cardId));

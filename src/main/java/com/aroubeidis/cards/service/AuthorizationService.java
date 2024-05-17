@@ -6,8 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.aroubeidis.cards.configuration.jwt.JwtService;
-import com.aroubeidis.cards.entities.CardDto;
-import com.aroubeidis.cards.entities.UserDto;
+import com.aroubeidis.cards.entities.CardEntity;
+import com.aroubeidis.cards.entities.UserEntity;
 import com.aroubeidis.cards.exceptions.ForbiddenException;
 import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.repository.CardRepository;
@@ -23,7 +23,7 @@ public class AuthorizationService {
 	private final CardRepository cardRepository;
 	private final JwtService jwtService;
 
-	public CardDto getCardAfterAuthorization(final HttpHeaders headers, final Long cardId) {
+	public CardEntity getCardAfterAuthorization(final HttpHeaders headers, final Long cardId) {
 
 		final var user = getUser(headers);
 		final var userId = user.getId();
@@ -46,7 +46,7 @@ public class AuthorizationService {
 								.build());
 	}
 
-	public UserDto getUser(final HttpHeaders headers) {
+	public UserEntity getUser(final HttpHeaders headers) {
 
 		final var token = getToken(headers);
 		final var email = jwtService.extractUsername(token);

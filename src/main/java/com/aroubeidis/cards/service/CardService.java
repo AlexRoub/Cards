@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aroubeidis.cards.assembler.CardAssembler;
-import com.aroubeidis.cards.entities.CardDto;
+import com.aroubeidis.cards.entities.CardEntity;
 import com.aroubeidis.cards.model.GetCardsVO;
 import com.aroubeidis.cards.model.Role;
 import com.aroubeidis.cards.model.Status;
@@ -54,16 +54,16 @@ public class CardService {
 
 	public CardResponse getCardById(final HttpHeaders headers, final Long cardId) {
 
-		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
+		final var cardEntity = authorizationService.getCardAfterAuthorization(headers, cardId);
 
-		return cardAssembler.toModel(cardDto);
+		return cardAssembler.toModel(cardEntity);
 	}
 
 	public CardResponse createCard(final HttpHeaders headers, final CreateCardRequest createCardRequest) {
 
 		final var user = authorizationService.getUser(headers);
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 				.name(createCardRequest.getName())
 				.description(createCardRequest.getDescription())
 				.color(createCardRequest.getColor())
@@ -72,7 +72,7 @@ public class CardService {
 				.user(user)
 				.build();
 
-		final var createdCard = cardRepository.save(cardDto);
+		final var createdCard = cardRepository.save(cardEntity);
 
 		return cardAssembler.toModel(createdCard);
 	}
@@ -80,35 +80,35 @@ public class CardService {
 	public CardResponse updateCard(final HttpHeaders headers, final Long cardId, @NonNull final UpdateCardRequest request)
 			throws Exception {
 
-		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
+		final var cardEntity = authorizationService.getCardAfterAuthorization(headers, cardId);
 
-		if (cardDto == null) {
+		if (cardEntity == null) {
 			return null;
 		}
 
 		if (StringUtils.isNotBlank(request.getName())) {
-			cardDto.setName(request.getName());
+			cardEntity.setName(request.getName());
 		}
 		if (request.getDescription() != null) {
-			cardDto.setDescription(request.getDescription());
+			cardEntity.setDescription(request.getDescription());
 		}
 		if (request.getColor() != null) {
-			cardDto.setColor(request.getColor());
+			cardEntity.setColor(request.getColor());
 		}
 		if (request.getStatus() != null) {
-			cardDto.setStatus(Status.findByValue(request.getStatus()));
+			cardEntity.setStatus(Status.findByValue(request.getStatus()));
 		}
 
-		final var card = cardRepository.save(cardDto);
+		final var card = cardRepository.save(cardEntity);
 
 		return cardAssembler.toModel(card);
 	}
 
 	public boolean deleteCard(final HttpHeaders headers, final Long cardId) {
 
-		final var cardDto = authorizationService.getCardAfterAuthorization(headers, cardId);
+		final var cardEntity = authorizationService.getCardAfterAuthorization(headers, cardId);
 
-		if (cardDto != null) {
+		if (cardEntity != null) {
 			cardRepository.deleteById(cardId);
 			return true;
 		}

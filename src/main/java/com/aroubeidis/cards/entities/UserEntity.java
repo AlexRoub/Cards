@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto implements UserDetails {
+public class UserEntity implements UserDetails {
 
 	@Serial
 	private static final long serialVersionUID = -706736434359155432L;
@@ -50,7 +50,7 @@ public class UserDto implements UserDetails {
 	private Role role;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<CardDto> cardDtos;
+	private List<CardEntity> cardEntities;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

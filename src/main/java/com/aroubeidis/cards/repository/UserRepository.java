@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.aroubeidis.cards.entities.UserDto;
+import com.aroubeidis.cards.entities.UserEntity;
 
-public interface UserRepository extends JpaRepository<UserDto, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-	Optional<UserDto> findByEmail(final String email);
+	Optional<UserEntity> findByEmail(final String email);
 }

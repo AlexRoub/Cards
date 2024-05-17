@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import com.aroubeidis.cards.entities.CardDto;
+import com.aroubeidis.cards.entities.CardEntity;
 import com.aroubeidis.cards.model.Status;
 import com.aroubeidis.cards.model.response.CardResponse;
 
@@ -27,7 +27,7 @@ class CardAssemblerTest {
 	@Test
 	void toModel_entity_exists_success() {
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 			.id(1L)
 			.name("name")
 			.description("this is a task")
@@ -36,7 +36,7 @@ class CardAssemblerTest {
 			.creationDate(LocalDate.now())
 			.build();
 
-		final var response = cardAssembler.toModel(cardDto);
+		final var response = cardAssembler.toModel(cardEntity);
 
 		final var expectedResponse = CardResponse.builder()
 			.id(1L)
@@ -59,7 +59,7 @@ class CardAssemblerTest {
 	@Test
 	void toModelPage_entity_exists_success() {
 
-		final var cardDto = CardDto.builder()
+		final var cardEntity = CardEntity.builder()
 			.id(1L)
 			.name("name")
 			.description("this is a task")
@@ -68,7 +68,7 @@ class CardAssemblerTest {
 			.creationDate(LocalDate.now())
 			.build();
 
-		final var response = cardAssembler.toModelPage(new PageImpl<CardDto>(List.of(cardDto)));
+		final var response = cardAssembler.toModelPage(new PageImpl<CardEntity>(List.of(cardEntity)));
 
 		final var expectedResponse = List.of(CardResponse.builder()
 			.id(1L)
@@ -89,7 +89,7 @@ class CardAssemblerTest {
 	@Test
 	void toModelPage_entity_null_success() {
 
-		final var response = cardAssembler.toModelPage(new PageImpl<CardDto>(Collections.emptyList(), PageRequest.of(0, 10), 0));
+		final var response = cardAssembler.toModelPage(new PageImpl<CardEntity>(Collections.emptyList(), PageRequest.of(0, 10), 0));
 
 		assertEquals(Collections.emptyList(), response.getContent());
 		assertEquals(0, response.getNumber());
